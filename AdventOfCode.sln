@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PuzzleConsole.test", "Puzzl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.Blazor", "AdventOfCode.Blazor\AdventOfCode.Blazor.csproj", "{E77C295D-A4AD-4ECD-9F71-7304686250F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.SourceGenerators", "AdventOfCode.SourceGenerators\AdventOfCode.SourceGenerators.csproj", "{066B7FD1-C424-454D-8011-22EA7267E575}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{E77C295D-A4AD-4ECD-9F71-7304686250F3}.Release|x64.Build.0 = Release|Any CPU
 		{E77C295D-A4AD-4ECD-9F71-7304686250F3}.Release|x86.ActiveCfg = Release|Any CPU
 		{E77C295D-A4AD-4ECD-9F71-7304686250F3}.Release|x86.Build.0 = Release|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Debug|x64.Build.0 = Debug|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Debug|x86.Build.0 = Debug|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Release|Any CPU.Build.0 = Release|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Release|x64.ActiveCfg = Release|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Release|x64.Build.0 = Release|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Release|x86.ActiveCfg = Release|Any CPU
+		{066B7FD1-C424-454D-8011-22EA7267E575}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
