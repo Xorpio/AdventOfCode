@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -39,166 +41,296 @@ public class Day21Solver : BaseSolver
             }
         }
 
-            logger.OnNext($"even: {evenPoints} odd: {oddPoints}");
+        logger.OnNext($"even: {evenPoints} odd: {oddPoints}");
 
         int maxRow = grid.GetLength(0);
         int maxCol = grid.GetLength(1);
 
-        HashSet<(Point point, int steps)> queue = new();
+        Queue<(Point point, Point dimension)> queue = new();
 
-        queue.Add((start, 0));
+        queue.Enqueue((start, new Point(0, 0)));
 
         double steps = puzzle.Length > 20 ? 64 : 6;
-        List<double> stepsList = new();
 
-        for (int i = 0; i < steps; i++)
+        bool even = false;
+
+        Dictionary<(Point point, Point dimension), bool> visited = new();
+        Dictionary<(Point point, Point dimension), bool> pvisited = new();
+
+        Dictionary<Point, List<(string key, int step)>> p = [];
+        if (puzzle.Length > 20)
         {
-            stepsList.Add(queue.Count());
-            while(queue.Any(s => s.steps == i))
-            {
-                var next = queue.First(s => s.steps == i);
-                queue.Remove(next);
-
-                var (row, col) = next.point;
-                if (row > 0 && grid[row - 1, col] != '#')
-                {
-                    queue.Add((new Point(row - 1, col), i + 1));
-                }
-                if (row < maxRow - 1 && grid[row + 1, col] != '#')
-                {
-                    queue.Add((new Point(row + 1, col), i + 1));
-                }
-                if (col > 0 && grid[row, col - 1] != '#')
-                {
-                    queue.Add((new Point(row, col - 1), i + 1));
-                }
-                if (col < maxCol - 1 && grid[row, col + 1] != '#')
-                {
-                    queue.Add((new Point(row, col + 1), i + 1));
-                }
-            }
+            p.Add(new Point(-2, -2), new ());
+            p.Add(new Point(-2, 0), new ());
+            p.Add(new Point(-2, 2), new ());
+            p.Add(new Point(0, -2), new ());
+            p.Add(new Point(0, 0), new ());
+            p.Add(new Point(0, 2), new ());
+            p.Add(new Point(2, -2), new ());
+            p.Add(new Point(2, 0), new ());
+            p.Add(new Point(2, 2), new ());
+        }
+        else
+        {
+            p.Add(new Point(-4, -4), new ());
+            p.Add(new Point(-4, 0), new ());
+            p.Add(new Point(-4, 4), new ());
+            p.Add(new Point(0, -4), new ());
+            p.Add(new Point(0, 0), new ());
+            p.Add(new Point(0, 4), new ());
+            p.Add(new Point(4, -4), new ());
+            p.Add(new Point(4, 0), new ());
+            p.Add(new Point(4, 4), new ());
         }
 
-        // steps = steps == 6 ? 100 : 26501365;
+        var seenDimensions = new Dictionary<Point, int>();
+        // var NorthHist = new List<string>();
+        // var NorthHist2 = new List<string>();
 
-        GiveAnswer1(queue.Count);
-
-        HashSet<(Point point, int steps, Point dimension)> queue2 = new();
-        queue2.Add((start, 0, new Point(0, 0)));
-
-        steps = puzzle.Length > 20 ? 500 : 500;
-
-        stepsList.Clear();
-
-        Dictionary<Point, int> first = [];
-        for (int i = 0; i <= steps; i++)
+        var hist = new Dictionary<Point, char[,]>();
+        bool done = false;
+        int i = 0;
+        while (!done)
         {
-            stepsList.Add(queue2.Count());
-            while(queue2.Any(s => s.steps == i))
+            var newQueue = new Queue<(Point point, Point dimension)>();
+            even = !even;
+            while(queue.Any())
             {
-                var next = queue2.First(s => s.steps == i);
-                queue2.Remove(next);
+                var next = queue.Dequeue();
 
                 var (row, col) = next.point;
+
+                if (visited.ContainsKey(next))
+                {
+                    continue;
+                }
+
+                if (!seenDimensions.ContainsKey(next.dimension))
+                {
+                    seenDimensions.Add(next.dimension, i);
+                    // logger.OnNext($"New dimension: {next.dimension} - Point: {next.point} - {i}");
+                }
+
                 if (row > 0 && grid[row - 1, col] != '#')
                 {
-                    queue2.Add((new Point(row - 1, col), i + 1, next.dimension));
+                    newQueue.Enqueue((new Point(row - 1, col), next.dimension));
                 }
                 if (row < maxRow - 1 && grid[row + 1, col] != '#')
                 {
-                    queue2.Add((new Point(row + 1, col), i + 1, next.dimension));
+                    newQueue.Enqueue((new Point(row + 1, col), next.dimension));
                 }
                 if (col > 0 && grid[row, col - 1] != '#')
                 {
-                    queue2.Add((new Point(row, col - 1), i + 1, next.dimension));
+                    newQueue.Enqueue((new Point(row, col -1), next.dimension));
                 }
                 if (col < maxCol - 1 && grid[row, col + 1] != '#')
                 {
-                    queue2.Add((new Point(row, col + 1), i + 1, next.dimension));
+                    newQueue.Enqueue((new Point(row, col + 1), next.dimension));
                 }
 
                 if (row == 0)
                 {
-                    queue2.Add((new Point(maxRow - 1, col), i + 1, next.dimension with { row = next.dimension.row - 1 }));
+                    newQueue.Enqueue((new Point(maxRow - 1, col), next.dimension with { row = next.dimension.row - 1 }));
                 }
                 if (row == maxRow - 1)
                 {
-                    queue2.Add((new Point(0, col), i + 1, next.dimension with { row = next.dimension.row + 1 }));
+                    newQueue.Enqueue((new Point(0, col), next.dimension with { row = next.dimension.row + 1 }));
                 }
                 if (col == 0)
                 {
-                    queue2.Add((new Point(row, maxCol -1), i + 1, next.dimension with { col = next.dimension.col - 1 }));
+                    newQueue.Enqueue((new Point(row, maxCol -1), next.dimension with { col = next.dimension.col - 1 }));
                 }
                 if (col == maxCol - 1)
                 {
-                    queue2.Add((new Point(row, 0), i + 1, next.dimension with { col = next.dimension.col + 1 }));
+                    newQueue.Enqueue((new Point(row, 0), next.dimension with { col = next.dimension.col + 1 }));
+                }
+
+                visited[next] = even;
+                if (p.ContainsKey(next.dimension))
+                {
+                    pvisited[next] = even;
                 }
             }
-            //
-            // logger.OnNext($"After {i} steps");
-            // foreach (var d in queue2.Select(l => l.dimension).Distinct())
+
+            if (i == steps)
+            {
+                GiveAnswer1(visited.Count(s => s.Value == even && s.Key.dimension == new Point(0, 0)));
+            }
+
+            if (p.All(i => i.Value.Count > 1 && i.Value[^1].key == p[new Point(0,0)][^1].key)) 
+            {
+                logger.OnNext($"Step {i} - {queue.Count} - {p[new Point(0,0)].Count()}");
+                done = true;
+            }   
+
+            foreach(var d in pvisited)
+            {
+                if (!hist.ContainsKey(d.Key.dimension))
+                {
+                    hist[d.Key.dimension] = new char[maxRow + 1, maxCol + 1];
+                    //add rocks
+                    for(int r = 0; r < maxRow; r++)
+                    {
+                        for(int c = 0; c < maxCol; c++)
+                        {
+                            hist[d.Key.dimension][r, c] = grid[r, c];
+                        }
+                    }
+                }
+
+                hist[d.Key.dimension][d.Key.point.row, d.Key.point.col] = 'O';
+            }
+            foreach(var h in hist)
+            {
+                var k = "";
+                for(int r = 0; r < maxRow; r++)
+                {
+                    for(int c = 0; c < maxCol; c++)
+                    {
+                        k += h.Value[r, c];
+                    }
+                }
+
+                if (p.ContainsKey(h.Key) && !p[h.Key].Any(s => s.key == k))
+                {
+                    p[h.Key].Add((k, i));
+                }
+            }
+
+            // if (hist.ContainsKey(North with {row = North.row - 1}))
             // {
-            //     var hash = "";
-            //
-            //     if (!first.ContainsKey(d))
-            //     {
-            //         first[d] = i;
-            //     }
-            //
-            //     if (d != new Point(0, 1))
-            //         continue;
-            //
-            //     for (int r = 0; r < maxRow; r++)
-            //     {
-            //         var line = "";
-            //         for (int c = 0; c < maxCol; c++)
-            //         {
-            //             if (queue2.Any(s => s.point == new Point(r, c) && s.dimension == d))
-            //             {
-            //                 if (!first.ContainsKey(d))
-            //                 {
-            //                     first[d] = i;
-            //                 }
-            //
-            //                 line += "O";
-            //             }
-            //             else
-            //             {
-            //                 line += grid[r, c];
-            //             }
-            //         }
-            //
-            //         logger.OnNext(line);
-            //         hash += line;
-            //     }
-            //
-            //     // foreach(var p in queue2.Where(s => s.dimension == d).Select(s => s.point))
-            //     // {
-            //     //     hash += $"({p.row},{p.col})";
-            //     // }
-            //     //
-            //     // //get md5 string of hash
-            //     // using MD5 md5Hash = MD5.Create();
-            //     // byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(hash));
-            //     // StringBuilder sBuilder = new();
-            //     // for (int j = 0; j < data.Length; j++)
-            //     // {
-            //     //     sBuilder.Append(data[j].ToString("x2"));
-            //     // }
-                // var sBuilder = "";
-                // logger.OnNext($"{sBuilder} - {d} - {first[d]}" );
+            //     throw new Exception("North is not north on step " + i);
             // }
 
-            // logger.OnNext("");
+            var lines = new List<string>();
+            if (visited.Any(s => s.Key.dimension == new Point(0,-4)))
+            {
+                lines.Add("step: " + i);
+                for(int r = 0; r < maxRow; r++)
+                {
+                    var line = "";
+                    for(int c = 0; c < maxCol; c++)
+                    {
+                        if (visited.ContainsKey((new Point(r, c), new Point(0,-4))))
+                        {
+                            line += "O";
+                        }
+                        else
+                        {
+                            line += grid[r, c];
+                        }
+                    }
+
+                    lines.Add(line);
+                }
+
+                if (lines.All(l => !l.Contains(".")))
+                {
+                    lines.Clear();
+                }
+                else{
+                    foreach(var l in lines)
+                    {
+                        logger.OnNext(l);
+                    }
+                }
+                logger.OnNext("");
+            }
+
+
+            // if (i == 100)
+            // {
+            //     break;
+            // }
+
+            queue = new Queue<(Point point, Point dimension)>(newQueue.Distinct());
+
+            // logger.OnNext($"Step {i} - {queue.Count}");
+
+            i++;
         }
 
-        for (var index = 1; index < stepsList.Count; index++)
+        var mod = seenDimensions[new Point(3,0)] - seenDimensions[new Point(2,0)];
+
+        steps = steps == 6 ? 100 : 26501365;
+
+        // maxRow = seenDimensions.Select(d => d.Key.row).Max() + 2;
+        // maxCol = seenDimensions.Select(d => d.Key.col).Max() + 2;
+        // var minRow = seenDimensions.Select(d => d.Key.row).Min() -1;
+        // var minCol = seenDimensions.Select(d => d.Key.col).Min() -1;
+
+        foreach (var pp in p)
         {
-            var s = stepsList[index];
-            logger.OnNext($"from {stepsList[index -1]} to {s}. {index} + {s - index} | diff: {s - stepsList[index - 1]} = {index} + {s - stepsList[index - 1] - index}");
+            logger.OnNext($"{pp.Key} - {pp.Value.Count}");
+            foreach(var ppp in pp.Value)
+            {
+                logger.OnNext($"{ppp.key[0..10]} - {ppp.step} - {ppp.key.Where(c => c == 'O').Count()}");
+            }
+            logger.OnNext("");
         }
 
-        GiveAnswer2(queue.Count);
+        // for(int r = minRow; r < maxRow; r++)
+        // {
+        //     var line = "";
+        //     for(int c = minCol; c < maxCol; c++)
+        //     {
+        //         if (seenDimensions.ContainsKey(new Point(r, c)))
+        //         {
+        //             line += seenDimensions[new Point(r, c)].ToString().PadLeft(4);
+        //         }
+        //         else
+        //         {
+        //             line += "--- ";
+        //         }
+        //     }
+
+        //     logger.OnNext(line);
+        // }
+
+
+        // foreach(var a in analysis)
+        // {
+        //     var values = string.Join(',', a.Value.Select(v => $"({v.row},{v.col})"));
+        //     if (!a.Key.Contains("."))
+        //     {
+        //         if (a.Value[0].row == 0 && a.Value[0].col > 0 && a.Value.Any(v => v.row != 0 || v.col <= 0))
+        //         {
+        //             throw new Exception($"{a.Key} - {values}");
+        //         }
+        //         if (a.Value[0].row == 0 && a.Value[0].col < 0 && a.Value.Any(v => v.row != 0 || v.col >= 0))
+        //         {
+        //             throw new Exception($"{a.Key} - {values}");
+        //         }
+        //         if (a.Value[0].col == 0 && a.Value[0].row > 0 && a.Value.Any(v => v.col != 0 || v.row <= 0))
+        //         {
+        //             throw new Exception($"{a.Key} - {values}");
+        //         }
+        //         if (a.Value[0].col == 0 && a.Value[0].row < 0 && a.Value.Any(v => v.col != 0 || v.row >= 0))
+        //         {
+        //             throw new Exception($"{a.Key} - {values}");
+        //         }
+        //         if (a.Value[0].row > 0 && a.Value[0].col > 0 && a.Value.Any(v => v.row <= 0 || v.col <= 0))
+        //         {
+        //             throw new Exception($"{a.Key} - {values}");
+        //         }
+        //         if (a.Value[0].row > 0 && a.Value[0].col < 0 && a.Value.Any(v => v.row <= 0 || v.col >= 0))
+        //         {
+        //             throw new Exception($"{a.Key} - {values}");
+        //         }
+        //         if (a.Value[0].row < 0 && a.Value[0].col > 0 && a.Value.Any(v => v.row >= 0 || v.col <= 0))
+        //         {
+        //             throw new Exception($"{a.Key} - {values}");
+        //         }
+        //         if (a.Value[0].row < 0 && a.Value[0].col < 0 && a.Value.Any(v => v.row >= 0 || v.col >= 0))
+        //         {
+        //             throw new Exception($"{a.Key} - {values}");
+        //         }
+
+        //     }
+        // }
+
+
+        GiveAnswer2("");
     }
 }
 
