@@ -22,7 +22,7 @@ jobs:
       uses: actions/setup-dotnet@v4.2.0
       
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
 
     - name: install tailwind
       working-directory: ./AdventOfCode.Blazor
