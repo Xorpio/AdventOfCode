@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.Solvers", "Adv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.Solvers.Tests", "AdventOfCode.Solvers.Tests\AdventOfCode.Solvers.Tests.csproj", "{D5A051E9-1D7F-4D6A-AD82-ABCB83A4D610}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.Blazor.Test", "AdventOfCode.Blazor.Test\AdventOfCode.Blazor.Test.csproj", "{AD78F58C-5F1D-477C-8128-73FDF476CEC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,18 @@ Global
 		{D5A051E9-1D7F-4D6A-AD82-ABCB83A4D610}.Release|x64.Build.0 = Release|Any CPU
 		{D5A051E9-1D7F-4D6A-AD82-ABCB83A4D610}.Release|x86.ActiveCfg = Release|Any CPU
 		{D5A051E9-1D7F-4D6A-AD82-ABCB83A4D610}.Release|x86.Build.0 = Release|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Debug|x64.Build.0 = Debug|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Debug|x86.Build.0 = Debug|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Release|x64.ActiveCfg = Release|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Release|x64.Build.0 = Release|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{AD78F58C-5F1D-477C-8128-73FDF476CEC8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
