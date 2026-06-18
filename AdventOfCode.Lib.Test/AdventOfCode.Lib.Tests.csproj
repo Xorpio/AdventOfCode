@@ -22,7 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="7.0.0" />
-    <PackageReference Include="Moq.AutoMock" Version="3.5.0" />
+    <PackageReference Include="Moq.AutoMock" Version="3.6.1" />
     <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="9.0.0" />
   </ItemGroup>
 
